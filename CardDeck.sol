@@ -16,7 +16,7 @@ contract CardDeck {
     }
 
     function shuffleDeck() internal {
-        uint256 seed = uint256(keccak256(abi.encodePacked(block.timestamp, block.difficulty, blockhash(block.number - 1))));
+        uint256 seed = uint256(keccak256(abi.encodePacked(block.timestamp, block.prevrandao, blockhash(block.number - 1))));
         for (uint256 i = 0; i < deck.length; i++) {
             uint256 swapIndex = seed % deck.length;
             (deck[i], deck[swapIndex]) = (deck[swapIndex], deck[i]); // Tausche Karten
