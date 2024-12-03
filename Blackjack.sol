@@ -25,9 +25,20 @@ contract Blackjack is CardDeck, Randomness {
     function joinGame(uint256 bet) external payable {
         require(playerCount < 4, "Max 4 players allowed");
         require(msg.value == bet, "Bet amount mismatch");
-        players.push(Player(msg.sender, bet, new uint8ue, false));
+
+        // Füge einen neuen leeren Spieler hinzu
+        players.push();
+        uint256 index = players.length - 1;
+
+        // Setze die Felder einzeln
+        players[index].addr = msg.sender;
+        players[index].bet = bet;
+        players[index].isActive = true;
+        players[index].isBusted = false;
+        // Das 'hand'-Array wird automatisch als leeres Array initialisiert
+
         playerCount++;
-    }
+        }
 
     function startGame() external {
         require(playerCount > 0, "No players in the game");
