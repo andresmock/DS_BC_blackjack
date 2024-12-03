@@ -26,7 +26,7 @@ contract Blackjack is CardDeck, Randomness {
         require(playerCount < 4, "Max 4 players allowed");
         require(msg.value == bet, "Bet amount mismatch");
 
-        // Füge einen neuen leeren Spieler hinzu
+        // neuen leeren Spieler hinzu
         players.push();
         uint256 index = players.length - 1;
 
