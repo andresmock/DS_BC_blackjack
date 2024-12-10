@@ -1,0 +1,51 @@
+{
+	"compiler": {
+		"version": "0.8.26+commit.8a97fa7a"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"CardDeck.sol": "CardDeck"
+		},
+		"evmVersion": "cancun",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"CardDeck.sol": {
+			"keccak256": "0xd5af91e56f98dfc142f9032ad80fda85125c34ba9c312608465367d6e3fb7797",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://3e30974c6d25c84f444944f8ffb2936807ef8e42fdb018eed04b0e80afc557e1",
+				"dweb:/ipfs/QmQqESFwMUKGRzq8ZdvhYjpj19HsSAva998cFzJbQDmCCL"
+			]
+		}
+	},
+	"version": 1
+}

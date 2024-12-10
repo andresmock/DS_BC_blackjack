@@ -37,6 +37,7 @@ contract CardDeck {
 
         for (uint256 i = 0; i < hand.length; i++) {
             uint8 cardValue = hand[i] % 13; // Kartenwert (1–13)
+            if (cardValue == 0) cardValue = 13;
             if (cardValue > 10) cardValue = 10; // Bildkarten zählen 10
             if (cardValue == 1) aces++; // Ass
             value += cardValue;

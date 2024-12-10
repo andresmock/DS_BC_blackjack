@@ -1,0 +1,212 @@
+{
+	"compiler": {
+		"version": "0.8.26+commit.8a97fa7a"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"inputs": [],
+				"name": "bank",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "bankHand",
+				"outputs": [
+					{
+						"internalType": "uint8",
+						"name": "",
+						"type": "uint8"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "determineWinner",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getAllHandsFormatted",
+				"outputs": [
+					{
+						"internalType": "string[]",
+						"name": "",
+						"type": "string[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "playerIndex",
+						"type": "uint256"
+					}
+				],
+				"name": "hit",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "bet",
+						"type": "uint256"
+					}
+				],
+				"name": "joinGame",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "playerCount",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "players",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "bet",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "isActive",
+						"type": "bool"
+					},
+					{
+						"internalType": "bool",
+						"name": "isBusted",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "playerIndex",
+						"type": "uint256"
+					}
+				],
+				"name": "stand",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "startGame",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"Blackjack.sol": "Blackjack"
+		},
+		"evmVersion": "cancun",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"Blackjack.sol": {
+			"keccak256": "0x6b62966eb79f506db843de99ef923663ddfa0e8b540971e3c7ef108297210e99",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://2a5efc2c0555c0b676a7ced58e385966e1cb13b25de16cdb7eccd469b1c2817b",
+				"dweb:/ipfs/QmYxRbNhqrpDDNFSvkLUxMJF31VvkjAEoXA6vVDpcXXDPr"
+			]
+		},
+		"CardDeck.sol": {
+			"keccak256": "0x64a944e25e4e9b357e8b02c362ec6986a79fc17b0c8fe689eb1d8a23aaf0bcdc",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://701eedcb338320eeaefd2fb8be30208638c05b1d6e47090e8d6ed6201410a8bb",
+				"dweb:/ipfs/QmYw5BMZXWqLdJKQCiVTGDtEzV1ewwS5h2qRVwGChXFdf6"
+			]
+		},
+		"Randomness.sol": {
+			"keccak256": "0xb1da0f11618b96bccd0d54a7e1cd03fb1b861cf30d465711507efd939d1791e7",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://e2efddf1010c33f0ceec20db37188c43e5ecbe2596d67618a11c548dfdc701a3",
+				"dweb:/ipfs/QmXoTNvzK7L7YnTymroDDQ4Pr9ofJcSkAP43j67zV8GPNY"
+			]
+		}
+	},
+	"version": 1
+}
