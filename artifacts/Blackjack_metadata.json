@@ -7,7 +7,7 @@
 		"abi": [
 			{
 				"inputs": [],
-				"stateMutability": "nonpayable",
+				"stateMutability": "payable",
 				"type": "constructor"
 			},
 			{
@@ -44,31 +44,25 @@
 			},
 			{
 				"inputs": [],
-				"name": "bank",
+				"name": "LastBankHand",
 				"outputs": [
 					{
-						"internalType": "address",
+						"internalType": "string",
 						"name": "",
-						"type": "address"
+						"type": "string"
 					}
 				],
 				"stateMutability": "view",
 				"type": "function"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"name": "bankHand",
+				"inputs": [],
+				"name": "Winners",
 				"outputs": [
 					{
-						"internalType": "uint8",
+						"internalType": "string",
 						"name": "",
-						"type": "uint8"
+						"type": "string"
 					}
 				],
 				"stateMutability": "view",
@@ -94,33 +88,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "formattedLastBankHand",
-				"outputs": [
-					{
-						"internalType": "string",
-						"name": "",
-						"type": "string"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "formattedLastWinners",
-				"outputs": [
-					{
-						"internalType": "string",
-						"name": "",
-						"type": "string"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "getAllHandsFormatted",
+				"name": "getAllHands",
 				"outputs": [
 					{
 						"internalType": "string[]",
@@ -132,13 +100,7 @@
 				"type": "function"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "playerIndex",
-						"type": "uint256"
-					}
-				],
+				"inputs": [],
 				"name": "hit",
 				"outputs": [],
 				"stateMutability": "nonpayable",
@@ -155,91 +117,6 @@
 				"name": "joinGame",
 				"outputs": [],
 				"stateMutability": "payable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"name": "lastBankHand",
-				"outputs": [
-					{
-						"internalType": "uint8",
-						"name": "",
-						"type": "uint8"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"name": "lastWinners",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "playerCount",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"name": "players",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "addr",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "bet",
-						"type": "uint256"
-					},
-					{
-						"internalType": "bool",
-						"name": "isActive",
-						"type": "bool"
-					},
-					{
-						"internalType": "bool",
-						"name": "isBusted",
-						"type": "bool"
-					}
-				],
-				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -291,11 +168,11 @@
 	},
 	"sources": {
 		"Blackjack.sol": {
-			"keccak256": "0x3679ac30cbd96b78e9739ae9572a5439bacc165af8175d907c4f114be691873c",
+			"keccak256": "0x19286cca52a02e9e7d1f33299a4ead598ea9998f9e8db9c46866efd65970a168",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://a643d3b0079d24ec3bbcb880cf5d0dacfed4c4b658777bf58dbc6356969a4bd1",
-				"dweb:/ipfs/QmYwHU1tHsAgYY6adinSkqDVEaqCxtYciN5RY5LDXeQwL1"
+				"bzz-raw://3b1fa1a8487788baa6cd34af6a7313cc0ab551157fd23c1ad888d40f3c048b0d",
+				"dweb:/ipfs/QmRyaFWT4YKGdkhn3n7D94CkM9ZdsS2JFMR7R4haF1pEhS"
 			]
 		},
 		"CardDeck.sol": {

@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-// Importiere die anderen Contracts
 import "./CardDeck.sol";
 import "./Randomness.sol";
 
@@ -14,27 +13,26 @@ contract Blackjack is CardDeck, Randomness {
         bool isBusted;
     }
 
-    Player[] public players;
+    Player[] private players;
     uint256 public playerCount;
-    uint8[] public bankHand; // Hand der Bank
-    address public bank;
-    uint8[] public lastBankHand; // Speichert die gezogenen Karten der Bank
-    address[] public lastWinners; // Speichert die Gewinneradressen
+    uint8[] private bankHand; // Hand der Bank
+    address private bank;
+    uint8[] private lastBankHand; // Speichert die gezogenen Karten der Bank
+    address[] private lastWinners; // Speichert die Gewinneradressen
 
 
-    constructor() {
-        bank = msg.sender; // Derjenige, der den Contract deployt, ist die Bank
+    constructor() payable {
+        bank = msg.sender;
     }
 
     function joinGame(uint256 bet) external payable {
         require(playerCount < 4, "Max 4 players allowed");
         require(msg.value == bet, "Bet amount mismatch");
 
-        // neuen Spieler hinzufügen
         players.push(Player({
             addr: msg.sender,
             bet: bet,
-            hand: new uint8[](0), //rekte Initialisierung eines leeren Arrays
+            hand: new uint8[](0),
             isActive: true,
             isBusted: false
         }));
@@ -46,7 +44,6 @@ contract Blackjack is CardDeck, Randomness {
         require(playerCount > 0, "No players in the game");
         shuffleDeck();
 
-        // Karten an Spieler und die Bank austeilen
         for (uint256 i = 0; i < players.length; i++) {
             players[i].hand.push(drawCard());
             players[i].hand.push(drawCard());
@@ -74,7 +71,7 @@ contract Blackjack is CardDeck, Randomness {
             } else if (cardValue == 13) {
                 cardSymbol = "K";
             } else {
-                cardSymbol = uint2str(cardValue); 
+                cardSymbol = uint2str(cardValue);
             }
 
             handString = string(abi.encodePacked(handString, cardSymbol));
@@ -87,8 +84,7 @@ contract Blackjack is CardDeck, Randomness {
         return handString;
     }
 
-
-    function getAllHandsFormatted() external view returns (string[] memory) {
+    function getAllHands() external view returns (string[] memory) {
         string[] memory formattedHands = new string[](players.length + 1);
 
         // Bankhand formatieren
@@ -102,38 +98,37 @@ contract Blackjack is CardDeck, Randomness {
         return formattedHands;
     }
 
-    function hit(uint256 playerIndex) external {
-        require(msg.sender == players[playerIndex].addr, "Not your turn");
+    function hit() external {
+        uint256 playerIndex = findPlayerIndex(msg.sender);
+        require(playerIndex != type(uint256).max, "You are not a player");
+
         require(players[playerIndex].isActive, "Player is not active");
         require(!players[playerIndex].isBusted, "Player is already busted");
 
         uint8 card = drawCard();
         players[playerIndex].hand.push(card);
 
-        // Überprüfe, ob der Spieler bustet (über 21 Punkte)
         if (getHandValue(players[playerIndex].hand) > 21) {
             players[playerIndex].isBusted = true;
             players[playerIndex].isActive = false;
         }
     }
 
-
     function stand(uint256 playerIndex) external {
         require(msg.sender == players[playerIndex].addr, "Not your turn");
         players[playerIndex].isActive = false;
     }
-        
-    // Event für die gezogenen Karten der Bank
+
     event BankCardDrawn(uint8 card);
     event GameResult(address winner, uint8 score);
 
-    string public formattedLastBankHand; // Speichert die formatierte Bankhand
+    string public LastBankHand; // vorher: formattedLastBankHand
+    string public Winners;      // vorher: formattedLastWinners
 
     function determineWinner() external returns (string memory, address[] memory) {
         uint8 bankScore = getHandValue(bankHand);
-        delete lastWinners; // vorherige Gewinner löschen
+        delete lastWinners;
 
-        // Bank zieht Karten
         while (bankScore < 17) {
             uint8 card = drawCard();
             bankHand.push(card);
@@ -143,9 +138,8 @@ contract Blackjack is CardDeck, Randomness {
 
         // Bankhand formatieren
         lastBankHand = bankHand;
-        formattedLastBankHand = formatHand(lastBankHand, "Last Bank Hand: ");
+        LastBankHand = formatHand(lastBankHand, "Last Bank Hand: ");
 
-        // Gewinner bestimmen
         for (uint256 i = 0; i < players.length; i++) {
             uint8 playerScore = getHandValue(players[i].hand);
             if (!players[i].isBusted && (playerScore > bankScore || bankScore > 21)) {
@@ -155,20 +149,14 @@ contract Blackjack is CardDeck, Randomness {
             }
         }
 
-        // Gewinner formatieren, bevor das Spiel zurückgesetzt wird
-        formattedLastWinners = formatWinners(lastWinners);
+        Winners = formatWinners(lastWinners);
 
-        // Spiel zurücksetzen
         resetGame();
 
-        return (formattedLastBankHand, lastWinners);
+        return (LastBankHand, lastWinners);
     }
 
-    string public formattedLastWinners;
-
-
     function formatWinners(address[] memory winners) internal view returns (string memory) {
-        // Prüfe zuerst, ob es überhaupt Gewinner gibt (ohne Bank)
         uint256 nonBankCount = 0;
         for (uint256 i = 0; i < winners.length; i++) {
             if (winners[i] != bank) {
@@ -180,7 +168,6 @@ contract Blackjack is CardDeck, Randomness {
             return "No players won.";
         }
 
-        // Erstelle einen formatierten String mit den Spielernamen
         string memory result = "";
         for (uint256 i = 0; i < winners.length; i++) {
             if (winners[i] != bank) {
@@ -199,19 +186,14 @@ contract Blackjack is CardDeck, Randomness {
         return result;
     }
 
-
     function findPlayerIndex(address playerAddress) internal view returns (uint256) {
         for (uint256 i = 0; i < players.length; i++) {
             if (players[i].addr == playerAddress) {
                 return i;
             }
         }
-        return type(uint256).max; // Kein Spieler gefunden
+        return type(uint256).max;
     }
-
-
-
-
 
     function resetGame() internal {
         delete players;
@@ -220,7 +202,6 @@ contract Blackjack is CardDeck, Randomness {
         resetDeck();
     }
 
-    // Hilfsfunktion zur Konvertierung von uint in string
     function uint2str(uint256 _i) internal pure returns (string memory _uintAsString) {
         if (_i == 0) {
             return "0";
