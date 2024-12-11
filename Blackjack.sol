@@ -49,7 +49,7 @@ contract Blackjack is CardDeck, Randomness {
             players[i].hand.push(drawCard());
         }
         bankHand.push(drawCard());
-        bankHand.push(drawCard());
+
     }
 
     function formatHand(uint8[] memory hand, string memory prefix) internal pure returns (string memory) {

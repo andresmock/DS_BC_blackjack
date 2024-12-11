@@ -120,6 +120,19 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "playerCount",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "uint256",
@@ -168,11 +181,11 @@
 	},
 	"sources": {
 		"Blackjack.sol": {
-			"keccak256": "0x19286cca52a02e9e7d1f33299a4ead598ea9998f9e8db9c46866efd65970a168",
+			"keccak256": "0x823afb0e4f5c629ae367f967f01bb6c6c6ae58807cd35a2d7a6ef0a36ebfe224",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://3b1fa1a8487788baa6cd34af6a7313cc0ab551157fd23c1ad888d40f3c048b0d",
-				"dweb:/ipfs/QmRyaFWT4YKGdkhn3n7D94CkM9ZdsS2JFMR7R4haF1pEhS"
+				"bzz-raw://65cfad19eda6830d0fb7c7704a9dbbcaf8a588431cb0b207b6e0165aea957ee6",
+				"dweb:/ipfs/QmTCiQsBi1F7vFVLATFaVy422M8ieP2amJFejhqqZVQZ1e"
 			]
 		},
 		"CardDeck.sol": {
