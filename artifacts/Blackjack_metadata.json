@@ -11,6 +11,38 @@
 				"type": "constructor"
 			},
 			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint8",
+						"name": "card",
+						"type": "uint8"
+					}
+				],
+				"name": "BankCardDrawn",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "winner",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint8",
+						"name": "score",
+						"type": "uint8"
+					}
+				],
+				"name": "GameResult",
+				"type": "event"
+			},
+			{
 				"inputs": [],
 				"name": "bank",
 				"outputs": [
@@ -45,8 +77,45 @@
 			{
 				"inputs": [],
 				"name": "determineWinner",
-				"outputs": [],
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					},
+					{
+						"internalType": "address[]",
+						"name": "",
+						"type": "address[]"
+					}
+				],
 				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "formattedLastBankHand",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "formattedLastWinners",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -86,6 +155,44 @@
 				"name": "joinGame",
 				"outputs": [],
 				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "lastBankHand",
+				"outputs": [
+					{
+						"internalType": "uint8",
+						"name": "",
+						"type": "uint8"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "lastWinners",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -184,19 +291,19 @@
 	},
 	"sources": {
 		"Blackjack.sol": {
-			"keccak256": "0x6b62966eb79f506db843de99ef923663ddfa0e8b540971e3c7ef108297210e99",
+			"keccak256": "0x3679ac30cbd96b78e9739ae9572a5439bacc165af8175d907c4f114be691873c",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://2a5efc2c0555c0b676a7ced58e385966e1cb13b25de16cdb7eccd469b1c2817b",
-				"dweb:/ipfs/QmYxRbNhqrpDDNFSvkLUxMJF31VvkjAEoXA6vVDpcXXDPr"
+				"bzz-raw://a643d3b0079d24ec3bbcb880cf5d0dacfed4c4b658777bf58dbc6356969a4bd1",
+				"dweb:/ipfs/QmYwHU1tHsAgYY6adinSkqDVEaqCxtYciN5RY5LDXeQwL1"
 			]
 		},
 		"CardDeck.sol": {
-			"keccak256": "0x64a944e25e4e9b357e8b02c362ec6986a79fc17b0c8fe689eb1d8a23aaf0bcdc",
+			"keccak256": "0xd5af91e56f98dfc142f9032ad80fda85125c34ba9c312608465367d6e3fb7797",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://701eedcb338320eeaefd2fb8be30208638c05b1d6e47090e8d6ed6201410a8bb",
-				"dweb:/ipfs/QmYw5BMZXWqLdJKQCiVTGDtEzV1ewwS5h2qRVwGChXFdf6"
+				"bzz-raw://3e30974c6d25c84f444944f8ffb2936807ef8e42fdb018eed04b0e80afc557e1",
+				"dweb:/ipfs/QmQqESFwMUKGRzq8ZdvhYjpj19HsSAva998cFzJbQDmCCL"
 			]
 		},
 		"Randomness.sol": {
