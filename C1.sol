@@ -6,11 +6,10 @@ library CardUtils {
 
 
     // Function to generate a hand for a Blackjack game
-    function generateHand(uint256 playerNumber, uint256 bankNumber) external pure returns (uint8[2] memory) {
-        uint8 card1 = uint8(uint256(keccak256(abi.encodePacked(playerNumber, bankNumber))) % RANK_COUNT + 1);
-        uint8 card2 = uint8(uint256(keccak256(abi.encodePacked(bankNumber, playerNumber))) % RANK_COUNT + 1);
+    function generateHand(uint256 Number1, uint256 Number2) external pure returns (uint8) {
+        uint8 card = uint8(uint256(keccak256(abi.encodePacked(Number1, Number2))) % RANK_COUNT + 1);
 
-        return [card1, card2];
+        return card;
     }
 
 

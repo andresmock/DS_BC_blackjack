@@ -20,6 +20,8 @@ contract CardGame {
     uint8[] private bankHand; // Dynamisches Array für Bankhand
     address private bank;
     bytes32[6] public bankHashes;
+    uint256 private currentBankHashIndex = 0;
+
 
 
     mapping(address => bytes32) public playerHashes;
@@ -109,11 +111,14 @@ contract CardGame {
 
         if (msg.sender == bank) {
             // Bank darf nur den Hash an Index 0 aufdecken
-            require(keccak256(abi.encodePacked(number)) == bankHashes[0], "Hash does not match for index 0");
+            require(keccak256(abi.encodePacked(number)) == bankHashes[currentBankHashIndex], "Hash does not match for index 0");
 
             // Speichere die enthüllte Zahl für die Bank
             revealedNumbers[bank] = number;
-        } else {
+            currentBankHashIndex++;
+        } 
+        
+        else {
             // Für Spieler: Überprüfe das Commitment und speichere die enthüllte Zahl
             bytes32 hash = keccak256(abi.encodePacked(number));
             require(hash == playerHashes[msg.sender], "Hash does not match");
@@ -134,16 +139,20 @@ contract CardGame {
             require(playerNumber != 0, "Player has not revealed their number");
 
             // Generiere Karten für den Spieler und füge sie zur Hand hinzu
-            uint8[2] memory newCards = CardUtils.generateHand(playerNumber, bankNumber);
-            players[i].hand.push(newCards[0]);
-            players[i].hand.push(newCards[1]);
-
+            uint8 Card1 = CardUtils.generateHand(playerNumber, bankNumber);
+            uint8 Card2 = CardUtils.generateHand(bankNumber, bankNumber);
+            players[i].hand.push(Card1);
+            players[i].hand.push(Card2);
         }
 
         // Generiere Karten für die Bank und füge sie zur Bankhand hinzu
-        uint8[2] memory bankCards = CardUtils.generateHand(bankNumber, bankNumber);
-        bankHand.push(bankCards[0]);
-        bankHand.push(bankCards[1]);
+        uint256 concatenatedNumber = 0;
+        for (uint256 i = 0; i < players.length; i++) {
+            concatenatedNumber = CardUtils.concatenateHand(players[i].hand) + concatenatedNumber;
+        }
+
+        uint8 bankCard = CardUtils.generateHand(concatenatedNumber, bankNumber);
+        bankHand.push(bankCard);
 
         state = GameState.Playing;
     }
@@ -193,6 +202,10 @@ contract CardGame {
         for (uint256 i = 0; i < players.length; i++) {
             require(hasChosen[players[i].addr], "Not all players have made their choice");
         }
+        // Überprüfe, ob die übergebene Zahl mit dem nächsten Bank-Hash übereinstimmt
+        require(currentBankHashIndex < bankHashes.length, "No more hashes available");
+        require(keccak256(abi.encodePacked(randomNumber)) == bankHashes[currentBankHashIndex], "Hash does not match the next bank hash");
+        currentBankHashIndex++;
 
         // Verteile Karten basierend auf den Entscheidungen der Spieler
         for (uint256 i = 0; i < players.length; i++) {
@@ -232,6 +245,8 @@ contract CardGame {
             state = GameState.HitStand; // Gehe zur nächsten Hit/Stand-Phase
         }
     }
+
+    
 
 
     // Function to map the numeric card value to the correct Blackjack representation
