@@ -2,10 +2,9 @@
 pragma solidity ^0.8.0;
 
 import "./C1.sol";
-import "./R1.sol";
 
-contract CardGame is CommitReveal {
-    enum GameState { WaitingForPlayers, Committing, Revealing, Playing, Completed }
+contract CardGame {
+    enum GameState { WaitingForPlayers, Committing, Revealing, Playing, HitStand, Completed }
     GameState public state;
 
     struct Player {
@@ -20,9 +19,24 @@ contract CardGame is CommitReveal {
     uint256 public playerCount;
     uint8[] private bankHand; // Dynamisches Array für Bankhand
     address private bank;
+    bytes32[6] public bankHashes;
+
+
+    mapping(address => bytes32) public playerHashes;
+    mapping(address => uint256) public revealedNumbers;
+    mapping(address => bool) public playerChoices; // Speichert die Wahl von Hit (true) oder Stand (false)
+    mapping(address => bool) public hasChosen;
+
+    bool public bankHashesSet; // Status, ob die Bank die Hash-Werte bereits gesetzt hat
 
     constructor() payable {
         bank = msg.sender;
+        bankHashes[0] = 0x5569044719a1ec3b04d0afa9e7a5310c7c0473331d13dc9fafe143b2c4e8148a;
+        bankHashes[1] = 0x8cdee82cb3ac6d59f1f417405a3eecf497b31f3d06d4c506f96deb67789f61e9;
+        bankHashes[2] = 0x99ab169e1c348aec31efd8dfb67cd8c9a0b8671e1175932dda6708b0cc02a502;
+        bankHashes[3] = 0x447dd11b9e568a4a39776c37476a0dc1aa52f08dec0e496bda446aacc5bded48;
+        bankHashes[4] = 0x88456bed5a4300ee8dbd308a84179f780647bb3c4153152528902c7141799b04;
+        bankHashes[5] = 0x0aeb49e17c56367f7bbd1ca11b9e0db05383c0d776987b6355d2dc2e7b60143e;
         state = GameState.WaitingForPlayers;
     }
 
@@ -31,10 +45,24 @@ contract CardGame is CommitReveal {
         _;
     }
 
+    modifier onlyPlayers() {
+        bool isPlayer = false;
+        for (uint256 i = 0; i < players.length; i++) {
+            if (players[i].addr == msg.sender) {
+                isPlayer = true;
+                break;
+            }
+        }
+        require(isPlayer, "Only participating players can perform this action");
+        _;
+    }
+
+
     modifier inState(GameState _state) {
         require(state == _state, "Invalid state for this action");
         _;
     }
+
 
     function joinGame(uint256 bet) external payable inState(GameState.WaitingForPlayers) {
         require(playerCount < 4, "Max 4 players allowed");
@@ -52,17 +80,47 @@ contract CardGame is CommitReveal {
         playerCount++;
     }
 
+
     function startCommittingPhase() external onlyBank inState(GameState.WaitingForPlayers) {
         require(playerCount > 0, "No players have joined");
         state = GameState.Committing;
     }
 
+
+    // Spieler setzen ihre Hashes
+    function commitHash(bytes32 hash) external inState(GameState.Committing) {
+        require(playerHashes[msg.sender] == 0, "Player hash already committed");
+        playerHashes[msg.sender] = hash;
+    }
+
+
     function startRevealPhase() external onlyBank inState(GameState.Committing) {
+
         for (uint256 i = 0; i < players.length; i++) {
-            require(commitments[players[i].addr] != 0, "Not all players committed");
+            require(playerHashes[players[i].addr] != 0, "Not all players committed");
         }
-        require(commitments[bank] != 0, "Bank has not committed");
+
         state = GameState.Revealing;
+    }
+
+
+    function revealNumber(uint256 number) external inState(GameState.Revealing) {
+        require(revealedNumbers[msg.sender] == 0, "Number already revealed");
+
+        if (msg.sender == bank) {
+            // Bank darf nur den Hash an Index 0 aufdecken
+            require(keccak256(abi.encodePacked(number)) == bankHashes[0], "Hash does not match for index 0");
+
+            // Speichere die enthüllte Zahl für die Bank
+            revealedNumbers[bank] = number;
+        } else {
+            // Für Spieler: Überprüfe das Commitment und speichere die enthüllte Zahl
+            bytes32 hash = keccak256(abi.encodePacked(number));
+            require(hash == playerHashes[msg.sender], "Hash does not match");
+
+            // Speichere die enthüllte Zahl für den Spieler
+            revealedNumbers[msg.sender] = number;
+        }
     }
 
 
@@ -90,7 +148,93 @@ contract CardGame is CommitReveal {
         state = GameState.Playing;
     }
 
-        // Function to map the numeric card value to the correct Blackjack representation
+
+    function isPlayerActive(address playerAddr) internal view returns (bool) {
+        for (uint256 i = 0; i < players.length; i++) {
+            if (players[i].addr == playerAddr) {
+                return players[i].isActive && !players[i].isBusted;
+            }
+        }
+        return false; // Spieler wurde nicht gefunden oder ist inaktiv
+    }
+
+    function playerHit() external onlyPlayers inState(GameState.Playing) {
+        require(isPlayerActive(msg.sender), "Player is not active or is busted");
+        playerHitOrStand(true); // "Hit" wird gewählt
+    }
+
+    function playerStand() external onlyPlayers inState(GameState.Playing) {
+        require(isPlayerActive(msg.sender), "Player is not active or is busted");
+        playerHitOrStand(false); // "Stand" wird gewählt
+    }
+
+    function playerHitOrStand(bool choice) private inState(GameState.Playing) {
+        require(!hasChosen[msg.sender], "Choice already made"); // Spieler darf nur einmal wählen
+
+        // Speichere die Wahl des Spielers
+        playerChoices[msg.sender] = choice; // true = Hit, false = Stand
+
+        // Markiere, dass der Spieler gewählt hat
+        hasChosen[msg.sender] = true;
+
+        if (!choice) {
+            // Spieler hat "Stand" gewählt
+            for (uint256 i = 0; i < players.length; i++) {
+                if (players[i].addr == msg.sender) {
+                    players[i].isActive = false; // Spieler ist nicht mehr aktiv
+                    break;
+                }
+            }
+        }
+    }
+
+    function distributeCards(uint256 randomNumber) external onlyBank inState(GameState.Playing) {
+        // Überprüfe, ob alle Spieler ihre Wahl getroffen haben
+        for (uint256 i = 0; i < players.length; i++) {
+            require(hasChosen[players[i].addr], "Not all players have made their choice");
+        }
+
+        // Verteile Karten basierend auf den Entscheidungen der Spieler
+        for (uint256 i = 0; i < players.length; i++) {
+            Player storage player = players[i];
+
+            if (playerChoices[player.addr] && player.isActive && !player.isBusted) { // Spieler hat "Hit" gewählt
+
+                uint256 concatenatedHand = CardUtils.concatenateHand(player.hand); // Handkarten verketten
+                uint8 newCard = CardUtils.hit(concatenatedHand, randomNumber);
+                player.hand.push(newCard);
+
+                // Überprüfe, ob der Spieler "busted" ist
+                if (CardUtils.calculateHandValue(player.hand) > 21) {
+                    player.isBusted = true;
+                    player.isActive = false;
+                }
+            }
+        }
+
+        // Zurücksetzen der Wahl-Flags für die nächste Runde
+        for (uint256 i = 0; i < players.length; i++) {
+            hasChosen[players[i].addr] = false;
+        }
+
+        // Prüfe, ob das Spiel beendet ist (alle Spieler sind "busted" oder "stand")
+        bool allInactive= true;
+        for (uint256 i = 0; i < players.length; i++) {
+            if (players[i].isActive) {
+                allInactive = false;
+                break;
+            }
+        }
+
+        if (allInactive) {
+            state = GameState.Completed;
+        } else {
+            state = GameState.HitStand; // Gehe zur nächsten Hit/Stand-Phase
+        }
+    }
+
+
+    // Function to map the numeric card value to the correct Blackjack representation
     function getCardRepresentation(uint8 card) internal pure returns (string memory) {
         if (card == 1) {
             return "A";
@@ -152,7 +296,22 @@ contract CardGame is CommitReveal {
         }
 
         return (bankCards, playerCards);
-}
+    }
+
+    function calculateAllCardValues() external view returns (uint8[] memory playerValues, uint8 bankValue) {
+        // Array für Spielerwerte initialisieren
+        playerValues = new uint8[](players.length);
+
+        // Spielerwerte berechnen
+        for (uint256 i = 0; i < players.length; i++) {
+            playerValues[i] = CardUtils.calculateHandValue(players[i].hand);
+        }
+
+        // Bankwert berechnen
+        bankValue = CardUtils.calculateHandValue(bankHand);
+
+        return (playerValues, bankValue);
+    }
 
 
 }
