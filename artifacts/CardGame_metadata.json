@@ -1,0 +1,217 @@
+{
+	"compiler": {
+		"version": "0.8.26+commit.8a97fa7a"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"stateMutability": "payable",
+				"type": "constructor"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes32",
+						"name": "hash",
+						"type": "bytes32"
+					}
+				],
+				"name": "commitHash",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "commitments",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "debugGetHands",
+				"outputs": [
+					{
+						"internalType": "uint8[][]",
+						"name": "",
+						"type": "uint8[][]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getAllHands",
+				"outputs": [
+					{
+						"internalType": "string[]",
+						"name": "",
+						"type": "string[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "bet",
+						"type": "uint256"
+					}
+				],
+				"name": "joinGame",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "playerCount",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "number",
+						"type": "uint256"
+					}
+				],
+				"name": "revealNumber",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "revealedNumbers",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "startCommittingPhase",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "startGame",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "startRevealPhase",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "state",
+				"outputs": [
+					{
+						"internalType": "enum CardGame.GameState",
+						"name": "",
+						"type": "uint8"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"B1.sol": "CardGame"
+		},
+		"evmVersion": "cancun",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"B1.sol": {
+			"keccak256": "0x1bcf5dd4c36d952c2c726acd403affee0b8342604189799326d46ebc80611edf",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://c1f2993eb9aafb6320730813608bb81da146b8ebe51e93d485885a15f7e7e7ae",
+				"dweb:/ipfs/QmPY3zWZb2UYtbD2ZXxJALobL8pSufU3HXSNSmrPgonqCk"
+			]
+		},
+		"C1.sol": {
+			"keccak256": "0xfeca885f16782c94dfe4f45fd42e537b0d04dc61189eecfbc2634cc01e98c6b1",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://239e8073dd3dcdb99cb682d828d1b518673e1361eb9fc0aad7067280e8c127eb",
+				"dweb:/ipfs/QmPfJbxEFbfzgW7mLp1uA4aiibwthymCjG6NizZVTrHEqh"
+			]
+		},
+		"R1.sol": {
+			"keccak256": "0x74e502e764fe426af37a13876e12ff214358a68865b27cae9380de0f699d2597",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://2ba8919dba764b6cabc64befef9481ccd529608029b2b757d381e2e94f2de2a8",
+				"dweb:/ipfs/QmWauYeNpKb3fafRQQdze4aR549pDLjtnCRWwAY7DqVaGM"
+			]
+		}
+	},
+	"version": 1
+}

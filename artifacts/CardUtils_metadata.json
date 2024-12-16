@@ -1,0 +1,70 @@
+{
+	"compiler": {
+		"version": "0.8.26+commit.8a97fa7a"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "playerNumber",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "bankNumber",
+						"type": "uint256"
+					}
+				],
+				"name": "generateHand",
+				"outputs": [
+					{
+						"internalType": "uint8[2]",
+						"name": "",
+						"type": "uint8[2]"
+					}
+				],
+				"stateMutability": "pure",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"C1.sol": "CardUtils"
+		},
+		"evmVersion": "cancun",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"C1.sol": {
+			"keccak256": "0xfeca885f16782c94dfe4f45fd42e537b0d04dc61189eecfbc2634cc01e98c6b1",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://239e8073dd3dcdb99cb682d828d1b518673e1361eb9fc0aad7067280e8c127eb",
+				"dweb:/ipfs/QmPfJbxEFbfzgW7mLp1uA4aiibwthymCjG6NizZVTrHEqh"
+			]
+		}
+	},
+	"version": 1
+}

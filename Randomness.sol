@@ -6,3 +6,5 @@ contract Randomness {
         return uint256(keccak256(abi.encodePacked(block.timestamp, block.prevrandao, blockhash(block.number - 1)))) % range;
     }
 }
+
+

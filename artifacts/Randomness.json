@@ -1,0 +1,63 @@
+{
+	"deploy": {
+		"VM:-": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"main:1": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"ropsten:3": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"rinkeby:4": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"kovan:42": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"goerli:5": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"Custom": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		}
+	},
+	"data": {
+		"bytecode": {
+			"functionDebugData": {},
+			"generatedSources": [],
+			"linkReferences": {},
+			"object": "6080604052348015600e575f80fd5b50603e80601a5f395ff3fe60806040525f80fdfea2646970667358221220e9617151f508c53810595784bbd9b2d6f32f1a993a996f08621f1972137a55a264736f6c634300081a0033",
+			"opcodes": "PUSH1 0x80 PUSH1 0x40 MSTORE CALLVALUE DUP1 ISZERO PUSH1 0xE JUMPI PUSH0 DUP1 REVERT JUMPDEST POP PUSH1 0x3E DUP1 PUSH1 0x1A PUSH0 CODECOPY PUSH0 RETURN INVALID PUSH1 0x80 PUSH1 0x40 MSTORE PUSH0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 0xE9 PUSH2 0x7151 CREATE2 ADDMOD 0xC5 CODESIZE LT MSIZE JUMPI DUP5 0xBB 0xD9 0xB2 0xD6 RETURN 0x2F BYTE SWAP10 GASPRICE SWAP10 PUSH16 0x8621F1972137A55A264736F6C634300 ADDMOD BYTE STOP CALLER ",
+			"sourceMap": "60:241:0:-:0;;;;;;;;;;;;;;;;;;;"
+		},
+		"deployedBytecode": {
+			"functionDebugData": {},
+			"generatedSources": [],
+			"immutableReferences": {},
+			"linkReferences": {},
+			"object": "60806040525f80fdfea2646970667358221220e9617151f508c53810595784bbd9b2d6f32f1a993a996f08621f1972137a55a264736f6c634300081a0033",
+			"opcodes": "PUSH1 0x80 PUSH1 0x40 MSTORE PUSH0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 0xE9 PUSH2 0x7151 CREATE2 ADDMOD 0xC5 CODESIZE LT MSIZE JUMPI DUP5 0xBB 0xD9 0xB2 0xD6 RETURN 0x2F BYTE SWAP10 GASPRICE SWAP10 PUSH16 0x8621F1972137A55A264736F6C634300 ADDMOD BYTE STOP CALLER ",
+			"sourceMap": "60:241:0:-:0;;;;;"
+		},
+		"gasEstimates": {
+			"creation": {
+				"codeDepositCost": "12400",
+				"executionCost": "64",
+				"totalCost": "12464"
+			},
+			"internal": {
+				"generateRandomNumber(uint256)": "infinite"
+			}
+		},
+		"methodIdentifiers": {}
+	},
+	"abi": []
+}
