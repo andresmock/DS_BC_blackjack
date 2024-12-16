@@ -11,14 +11,14 @@ contract CardGame is CommitReveal {
     struct Player {
         address addr;
         uint256 bet;
-        string[] hand; // Dynamisches Array für Handkarten
+        uint8[] hand; // Dynamisches Array für Handkarten
         bool isActive;
         bool isBusted;
     }
 
     Player[] private players;
     uint256 public playerCount;
-    string[] private bankHand; // Dynamisches Array für Bankhand
+    uint8[] private bankHand; // Dynamisches Array für Bankhand
     address private bank;
 
     constructor() payable {
@@ -44,7 +44,7 @@ contract CardGame is CommitReveal {
         players.push(Player({
             addr: msg.sender,
             bet: bet,
-            hand: new string[](0), //Leeres dynamisches Array initialisieren
+            hand: new uint8[](0), //Leeres dynamisches Array initialisieren
             isActive: true,
             isBusted: false
         }));
@@ -76,33 +76,82 @@ contract CardGame is CommitReveal {
             require(playerNumber != 0, "Player has not revealed their number");
 
             // Generiere Karten für den Spieler und füge sie zur Hand hinzu
-            string[2] memory newCards = CardUtils.generateHand(playerNumber, bankNumber);
+            uint8[2] memory newCards = CardUtils.generateHand(playerNumber, bankNumber);
             players[i].hand.push(newCards[0]);
             players[i].hand.push(newCards[1]);
-            
+
         }
 
         // Generiere Karten für die Bank und füge sie zur Bankhand hinzu
-        string[2] memory bankCards = CardUtils.generateHand(bankNumber, bankNumber);
+        uint8[2] memory bankCards = CardUtils.generateHand(bankNumber, bankNumber);
         bankHand.push(bankCards[0]);
         bankHand.push(bankCards[1]);
 
         state = GameState.Playing;
     }
 
-    function getAllCards() external view returns (string[] memory bankCards, string[][] memory playerCards) {
-    // Rückgabe der Karten der Bank
-    bankCards = bankHand;
-
-    // Initialisierung des Rückgabearrays für die Karten der Spieler
-    playerCards = new string[][](players.length);
-
-    for (uint256 i = 0; i < players.length; i++) {
-        // Speichere die Hand des Spielers im entsprechenden Index
-        playerCards[i] = players[i].hand;
+        // Function to map the numeric card value to the correct Blackjack representation
+    function getCardRepresentation(uint8 card) internal pure returns (string memory) {
+        if (card == 1) {
+            return "A";
+        } else if (card >= 2 && card <= 10) {
+            return uint2str(card); // Convert numbers 2-10 to string
+        } else if (card == 11) {
+            return "J";
+        } else if (card == 12) {
+            return "Q";
+        } else if (card == 13) {
+            return "K";
+        }
+        revert("Invalid card value");
     }
 
-    return (bankCards, playerCards);
+    // Helper function to convert uint to string
+    function uint2str(uint256 _i) internal pure returns (string memory) {
+        if (_i == 0) {
+            return "0";
+        }
+        uint256 j = _i;
+        uint256 length;
+        while (j != 0) {
+            length++;
+            j /= 10;
+        }
+        bytes memory bstr = new bytes(length);
+        uint256 k = length;
+        while (_i != 0) {
+            k = k - 1;
+            uint8 temp = (48 + uint8(_i - (_i / 10) * 10));
+            bstr[k] = bytes1(temp);
+            _i /= 10;
+        }
+        return string(bstr);
+    }
+
+    function getAllCards() external view returns (string[] memory bankCards, string[][] memory playerCards) {
+        // Initialisierung des Rückgabearrays für die Karten der Bank
+        bankCards = new string[](bankHand.length);
+
+        for (uint256 i = 0; i < bankHand.length; i++) {
+            bankCards[i] = getCardRepresentation(bankHand[i]); // Konvertiere die Karten der Bank
+        }
+
+        // Initialisierung des Rückgabearrays für die Karten der Spieler
+        playerCards = new string[][](players.length);
+
+        for (uint256 i = 0; i < players.length; i++) {
+            // Initialisiere ein Array für die Karten des Spielers
+            string[] memory playerHand = new string[](players[i].hand.length);
+
+            for (uint256 j = 0; j < players[i].hand.length; j++) {
+                playerHand[j] = getCardRepresentation(players[i].hand[j]); // Konvertiere die Karten des Spielers
+            }
+
+            // Speichere die konvertierte Hand des Spielers im entsprechenden Index
+            playerCards[i] = playerHand;
+        }
+
+        return (bankCards, playerCards);
 }
 
 
