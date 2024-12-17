@@ -8,22 +8,65 @@
 			{
 				"inputs": [
 					{
+						"internalType": "uint8[]",
+						"name": "cards",
+						"type": "uint8[]"
+					}
+				],
+				"name": "calculateHandValue",
+				"outputs": [
+					{
+						"internalType": "uint8",
+						"name": "",
+						"type": "uint8"
+					}
+				],
+				"stateMutability": "pure",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "uint256",
-						"name": "playerNumber",
+						"name": "Number1",
 						"type": "uint256"
 					},
 					{
 						"internalType": "uint256",
-						"name": "bankNumber",
+						"name": "Number2",
 						"type": "uint256"
 					}
 				],
 				"name": "generateHand",
 				"outputs": [
 					{
-						"internalType": "uint8[2]",
+						"internalType": "uint8",
 						"name": "",
-						"type": "uint8[2]"
+						"type": "uint8"
+					}
+				],
+				"stateMutability": "pure",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "playerNumber",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "randomNumber",
+						"type": "uint256"
+					}
+				],
+				"name": "hit",
+				"outputs": [
+					{
+						"internalType": "uint8",
+						"name": "",
+						"type": "uint8"
 					}
 				],
 				"stateMutability": "pure",
@@ -58,11 +101,11 @@
 	},
 	"sources": {
 		"C1.sol": {
-			"keccak256": "0xfeca885f16782c94dfe4f45fd42e537b0d04dc61189eecfbc2634cc01e98c6b1",
+			"keccak256": "0xd25eebd60487a9ad628d97cce9975dacdb4c6530c7bee3d356938a3aac1ba63c",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://239e8073dd3dcdb99cb682d828d1b518673e1361eb9fc0aad7067280e8c127eb",
-				"dweb:/ipfs/QmPfJbxEFbfzgW7mLp1uA4aiibwthymCjG6NizZVTrHEqh"
+				"bzz-raw://fbfb9522faf023db2d425b0c0e57b56a5cc616eeddf430aa20dad621cb3ed0f4",
+				"dweb:/ipfs/QmNYuwZxe4rWU3k9NR7ZStrg5zXoPBtZFXHeqsrvRnf5xi"
 			]
 		}
 	},

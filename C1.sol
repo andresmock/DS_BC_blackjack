@@ -40,7 +40,7 @@ library CardUtils {
     }
 
     function concatenateHand(uint8[] memory hand) internal pure returns (uint256) {
-        uint256 concatenated;
+        uint256 concatenated = 0;
         for (uint256 i = 0; i < hand.length; i++) {
             concatenated = concatenated * 100 + hand[i]; // Multipliziere mit 100, um Platz für zweistellige Kartenwerte zu schaffen
         }

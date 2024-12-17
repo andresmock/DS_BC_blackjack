@@ -140,7 +140,7 @@ contract CardGame {
 
             // Generiere Karten für den Spieler und füge sie zur Hand hinzu
             uint8 Card1 = CardUtils.generateHand(playerNumber, bankNumber);
-            uint8 Card2 = CardUtils.generateHand(bankNumber, bankNumber);
+            uint8 Card2 = CardUtils.generateHand(bankNumber, playerNumber);
             players[i].hand.push(Card1);
             players[i].hand.push(Card2);
         }
@@ -174,8 +174,28 @@ contract CardGame {
 
     function playerStand() external onlyPlayers inState(GameState.Playing) {
         require(isPlayerActive(msg.sender), "Player is not active or is busted");
-        playerHitOrStand(false); // "Stand" wird gewählt
+
+        playerHitOrStand(false); // Spieler wählt "Stand"
+
+        // Prüfen, ob alle Spieler inaktiv oder busted sind
+        bool allInactiveOrBusted = true;
+
+        for (uint256 i = 0; i < players.length; i++) {
+            if (players[i].isActive && !players[i].isBusted) {
+                allInactiveOrBusted = false;
+                break;
+            }
+        }
+
+        if (allInactiveOrBusted) {
+            // Wechsel in die Completed-Phase
+            state = GameState.Completed;
+
+            // Die Bank zieht automatisch Karten
+            generateBankCards();
+        }
     }
+
 
     function playerHitOrStand(bool choice) private inState(GameState.Playing) {
         require(!hasChosen[msg.sender], "Choice already made"); // Spieler darf nur einmal wählen
@@ -214,7 +234,7 @@ contract CardGame {
             if (playerChoices[player.addr] && player.isActive && !player.isBusted) { // Spieler hat "Hit" gewählt
 
                 uint256 concatenatedHand = CardUtils.concatenateHand(player.hand); // Handkarten verketten
-                uint8 newCard = CardUtils.hit(concatenatedHand, randomNumber);
+                uint8 newCard = CardUtils.generateHand(concatenatedHand, randomNumber);
                 player.hand.push(newCard);
 
                 // Überprüfe, ob der Spieler "busted" ist
@@ -241,12 +261,54 @@ contract CardGame {
 
         if (allInactive) {
             state = GameState.Completed;
-        } else {
-            state = GameState.HitStand; // Gehe zur nächsten Hit/Stand-Phase
+            generateBankCards();
+        } 
+    }
+
+    function generateBankCards() internal {
+        require(state == GameState.Completed, "Bank cards can only be drawn in Completed state");
+
+        uint256 combinedHashInput = 0;
+
+        // Verkette alle Spielercommits für die Zufallszahlengenerierung
+        for (uint256 i = 0; i < players.length; i++) {
+            combinedHashInput = uint256(keccak256(abi.encodePacked(combinedHashInput, playerHashes[players[i].addr])));
+        }
+
+        uint256 concatedBankHand = 0;
+
+        // Die Bank zieht Karten, bis der Wert >= 17 ist oder die Bank bustet
+        while (CardUtils.calculateHandValue(bankHand) < 17) {
+
+            concatedBankHand = CardUtils.concatenateHand(bankHand) + concatedBankHand;
+
+            uint8 newBankCard = CardUtils.generateHand(combinedHashInput, concatedBankHand);
+            bankHand.push(newBankCard);
+
         }
     }
 
-    
+    function cashout() external onlyBank inState(GameState.Completed) {
+        uint8 bankValue = CardUtils.calculateHandValue(bankHand);
+
+        // Gewinne berechnen und auszahlen
+        for (uint256 i = 0; i < players.length; i++) {
+            Player storage player = players[i];
+            uint8 playerValue = CardUtils.calculateHandValue(player.hand);
+
+            if (player.isBusted || (bankValue <= 21 && bankValue >= playerValue)) {
+                // Spieler verliert Einsatz - Bank behält den Betrag
+                continue;
+            } else {
+                // Spieler gewinnt seinen Einsatz + gleichen Betrag als Gewinn
+                uint256 payout = player.bet * 2;
+                payable(player.addr).transfer(payout);
+            }
+        }
+
+    }
+
+
 
 
     // Function to map the numeric card value to the correct Blackjack representation
