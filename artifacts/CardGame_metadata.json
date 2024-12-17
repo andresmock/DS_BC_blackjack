@@ -134,6 +134,13 @@
 			},
 			{
 				"inputs": [],
+				"name": "fundContract",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "getAllCards",
 				"outputs": [
 					{
@@ -145,6 +152,19 @@
 						"internalType": "string[][]",
 						"name": "playerCards",
 						"type": "string[][]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getContractBalance",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -353,11 +373,11 @@
 	},
 	"sources": {
 		"B1.sol": {
-			"keccak256": "0x29936b22411594c914ec8dbeabea52512eb927c0993dc7ca3686b1796188a00d",
+			"keccak256": "0xcb6fa97e624974f15ebd051a201d8cfde2c26bf640a44bf2e92c464aa0321d1e",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://5b7c47aa9425f4f2b252d08648b1b7bbb42aee19db94c71664cc53bb7350064f",
-				"dweb:/ipfs/QmRpxY9fvWWM4nGNCrEiZ6UtRFTeu6Pu6cbaUPjdFhyU76"
+				"bzz-raw://6ebea6625ce0b5497e6f535d97f308b8b330e01373d00dd64f193a946c7300f5",
+				"dweb:/ipfs/QmNqqSH2dSauNHH4YS5TyLJxUX6BESaFE8yz1RUkbxbXtN"
 			]
 		},
 		"CardLibrary.sol": {

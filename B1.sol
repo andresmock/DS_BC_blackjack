@@ -47,11 +47,20 @@ contract CardGame {
         bankHashes[5] = 0x0aeb49e17c56367f7bbd1ca11b9e0db05383c0d776987b6355d2dc2e7b60143e;
         state = GameState.WaitingForPlayers;
 
-        bankBalance = msg.value;  // Initialer Bankbetrag im Contract
-
         // Initialisiere das Timeout beim Start des Spiels
         resetActionDeadline();
     }
+
+    function fundContract() external payable onlyBank {
+        require(msg.value > 0, "Must send some ETH to fund the contract");
+        bankBalance += msg.value; // Aktualisiere den Bankkontostand
+    }
+
+    function getContractBalance() public view returns (uint256) {
+        return address(this).balance;
+    }
+
+
 
     /// Setzt das Timeout neu
     function resetActionDeadline() internal {
