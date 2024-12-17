@@ -86,7 +86,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"C1.sol": "CardUtils"
+			"CardLibrary.sol": "CardUtils"
 		},
 		"evmVersion": "cancun",
 		"libraries": {},
@@ -100,7 +100,7 @@
 		"remappings": []
 	},
 	"sources": {
-		"C1.sol": {
+		"CardLibrary.sol": {
 			"keccak256": "0xd25eebd60487a9ad628d97cce9975dacdb4c6530c7bee3d356938a3aac1ba63c",
 			"license": "MIT",
 			"urls": [

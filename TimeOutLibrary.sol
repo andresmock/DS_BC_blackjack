@@ -2,9 +2,9 @@
 pragma solidity ^0.8.0;
 
 library TimeoutUtils {
-    uint256 public constant ACTION_TIMEOUT = 5 minutes;
+    uint256 public constant ACTION_TIMEOUT = 1 minutes;
 
-    /// Berechnet das neue Timeout
+    /// Berechnet das neue Timeout (nach aktuellem Timestamp)
     function calculateNewDeadline() internal view returns (uint256) {
         return block.timestamp + ACTION_TIMEOUT;
     }

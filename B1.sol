@@ -5,11 +5,13 @@ import "./CardLibrary.sol";
 import "./TimeOutLibrary.sol";
 
 contract CardGame {
+    using TimeoutUtils for uint256;
+
     enum GameState { WaitingForPlayers, Committing, Revealing, Playing, HitStand, Completed }
     GameState public state;
 
     struct Player {
-        address addr;
+        address payable addr;
         uint256 bet;
         uint8[] hand; // Dynamisches Array für Handkarten
         bool isActive;
@@ -19,11 +21,9 @@ contract CardGame {
     Player[] private players;
     uint256 public playerCount;
     uint8[] private bankHand; // Dynamisches Array für Bankhand
-    address private bank;
+    address payable private bank;
     bytes32[6] public bankHashes;
     uint256 private currentBankHashIndex = 0;
-
-
 
     mapping(address => bytes32) public playerHashes;
     mapping(address => uint256) public revealedNumbers;
@@ -31,9 +31,14 @@ contract CardGame {
     mapping(address => bool) public hasChosen;
 
     bool public bankHashesSet; // Status, ob die Bank die Hash-Werte bereits gesetzt hat
+    uint256 public bankBalance;
+    
+    uint256 public actionDeadline;
+
+    event TimeLeft(uint256 timeRemaining);
 
     constructor() payable {
-        bank = msg.sender;
+        bank = payable(msg.sender);
         bankHashes[0] = 0x5569044719a1ec3b04d0afa9e7a5310c7c0473331d13dc9fafe143b2c4e8148a;
         bankHashes[1] = 0x8cdee82cb3ac6d59f1f417405a3eecf497b31f3d06d4c506f96deb67789f61e9;
         bankHashes[2] = 0x99ab169e1c348aec31efd8dfb67cd8c9a0b8671e1175932dda6708b0cc02a502;
@@ -41,7 +46,118 @@ contract CardGame {
         bankHashes[4] = 0x88456bed5a4300ee8dbd308a84179f780647bb3c4153152528902c7141799b04;
         bankHashes[5] = 0x0aeb49e17c56367f7bbd1ca11b9e0db05383c0d776987b6355d2dc2e7b60143e;
         state = GameState.WaitingForPlayers;
+
+        bankBalance = msg.value;  // Initialer Bankbetrag im Contract
+
+        // Initialisiere das Timeout beim Start des Spiels
+        resetActionDeadline();
     }
+
+    /// Setzt das Timeout neu
+    function resetActionDeadline() internal {
+        actionDeadline = TimeoutUtils.calculateNewDeadline();
+    }
+
+    
+    /// Entfernt einen inaktiven Spieler
+    function removeInactivePlayer(address payable playerAddress) internal {
+        for (uint256 i = 0; i < players.length; i++) {
+            if (players[i].addr == playerAddress) {
+                players[i].isActive = false;
+                players[i].isBusted = true;
+                break;
+            }
+        }
+    }
+
+    /// Auszahlung an alle aktiven Spieler
+    function payoutToAllPlayers() internal {
+        for (uint256 i = 0; i < players.length; i++) {
+            if (players[i].isActive) {
+                uint256 payout = players[i].bet * 2;
+                players[i].addr.transfer(payout);
+            }
+        }
+    }
+
+    /// Behandlung von Timeouts: Spieler oder Bank werden bestraft
+    function handleTimeout() external {
+        require(actionDeadline.hasTimeoutPassed(), "Timeout not yet passed");
+
+        if (state == GameState.Committing) {
+            // Committing-Phase: Spieler bestrafen, die nicht committed haben
+            for (uint256 i = 0; i < players.length; i++) {
+                if (playerHashes[players[i].addr] == 0 && players[i].isActive) {
+                    // Spieler hat nicht committed → Spieler wird entfernt
+                    removeInactivePlayer(players[i].addr);
+                }
+            }
+
+            if (allPlayersBusted()) {
+            state = GameState.Completed; // Spiel beenden
+            }
+
+            resetActionDeadline(); // Timeout zurücksetzen für die nächste Aktion
+        }
+
+        else if (state == GameState.Revealing) {
+            // Revealing-Phase: Prüfen, ob alle Spieler und die Bank revealed haben
+            bool allRevealed = true;
+            // Prüfe Spieler
+            for (uint256 i = 0; i < players.length; i++) {
+                if (revealedNumbers[players[i].addr] == 0 && players[i].isActive) {
+                    // Spieler hat nicht revealed → Spieler bestrafen
+                    removeInactivePlayer(players[i].addr);
+                    allRevealed = false;
+                }
+            }
+
+            if (allPlayersBusted()) {
+            state = GameState.Completed; // Spiel beenden
+            }
+
+            // Prüfe die Bank
+            if (revealedNumbers[bank] == 0) {
+                // Bank hat nicht revealed → Spieler gewinnen automatisch
+                payoutToAllPlayers();
+                state = GameState.Completed;
+                return;
+            }
+
+            if (allRevealed) {
+                // Alles in Ordnung → Timeout verlängern
+                resetActionDeadline();
+            }
+        }
+
+        else if (state == GameState.Playing) {
+            bool allPlayersActed = true;
+
+            // Prüfen, ob alle Spieler "Hit" oder "Stand" gewählt haben
+            for (uint256 i = 0; i < players.length; i++) {
+                if (players[i].isActive && !hasChosen[players[i].addr]) {
+                    // Spieler hat keine Wahl getroffen → bestrafen und entfernen
+                    removeInactivePlayer(players[i].addr);
+                    allPlayersActed = false;
+                }
+            }
+
+            if (allPlayersBusted()) {
+            state = GameState.Completed; // Spiel beenden
+            }
+
+            if (allPlayersActed) {
+                // Wenn alle Spieler gehandelt haben, aber die Bank verzögert → Bank wird bestraft
+                payoutToAllPlayers();
+                state = GameState.Completed;
+
+            } else {
+                // Nicht alle Spieler haben gewählt → Timeout verlängern
+                resetActionDeadline();
+            }
+        }
+    }
+
 
     modifier onlyBank() {
         require(msg.sender == bank, "Only the bank can perform this action");
@@ -66,6 +182,15 @@ contract CardGame {
         _;
     }
 
+    function allPlayersBusted() internal view returns (bool) {
+        for (uint256 i = 0; i < players.length; i++) {
+            if (players[i].isActive && !players[i].isBusted) {
+                return false; // Es gibt noch einen aktiven und nicht gebusteten Spieler
+            }
+        }
+        return true; // Alle aktiven Spieler sind gebusted
+    }
+
 
     function joinGame(uint256 bet) external payable inState(GameState.WaitingForPlayers) {
         require(playerCount < 4, "Max 4 players allowed");
@@ -73,7 +198,7 @@ contract CardGame {
 
         // Spieler mit leerem Handkarten-Array hinzufügen
         players.push(Player({
-            addr: msg.sender,
+            addr: payable(msg.sender),
             bet: bet,
             hand: new uint8[](0), //Leeres dynamisches Array initialisieren
             isActive: true,
@@ -87,6 +212,7 @@ contract CardGame {
     function startCommittingPhase() external onlyBank inState(GameState.WaitingForPlayers) {
         require(playerCount > 0, "No players have joined");
         state = GameState.Committing;
+        resetActionDeadline();
     }
 
 
@@ -135,7 +261,7 @@ contract CardGame {
         require(bankNumber != 0, "Bank has not revealed its number");
 
         for (uint256 i = 0; i < players.length; i++) {
-            address playerAddr = players[i].addr;
+            address payable playerAddr = players[i].addr;
             uint256 playerNumber = revealedNumbers[playerAddr];
             require(playerNumber != 0, "Player has not revealed their number");
 
@@ -159,7 +285,7 @@ contract CardGame {
     }
 
 
-    function isPlayerActive(address playerAddr) internal view returns (bool) {
+    function isPlayerActive(address payable playerAddr) internal view returns (bool) {
         for (uint256 i = 0; i < players.length; i++) {
             if (players[i].addr == playerAddr) {
                 return players[i].isActive && !players[i].isBusted;
@@ -169,12 +295,12 @@ contract CardGame {
     }
 
     function playerHit() external onlyPlayers inState(GameState.Playing) {
-        require(isPlayerActive(msg.sender), "Player is not active or is busted");
+        require(isPlayerActive(payable(msg.sender)), "Player is not active or is busted");
         playerHitOrStand(true); // "Hit" wird gewählt
     }
 
     function playerStand() external onlyPlayers inState(GameState.Playing) {
-        require(isPlayerActive(msg.sender), "Player is not active or is busted");
+        require(isPlayerActive(payable(msg.sender)), "Player is not active or is busted");
 
         playerHitOrStand(false); // Spieler wählt "Stand"
 
@@ -210,7 +336,7 @@ contract CardGame {
         if (!choice) {
             // Spieler hat "Stand" gewählt
             for (uint256 i = 0; i < players.length; i++) {
-                if (players[i].addr == msg.sender) {
+                if (players[i].addr == payable(msg.sender)) {
                     players[i].isActive = false; // Spieler ist nicht mehr aktiv
                     break;
                 }
@@ -287,26 +413,33 @@ contract CardGame {
             bankHand.push(newBankCard);
 
         }
+
     }
 
-    function cashout() external onlyBank inState(GameState.Completed) {
+    function cashout() external payable inState(GameState.Completed) {
         uint8 bankValue = CardUtils.calculateHandValue(bankHand);
 
-        // Gewinne berechnen und auszahlen
         for (uint256 i = 0; i < players.length; i++) {
             Player storage player = players[i];
             uint8 playerValue = CardUtils.calculateHandValue(player.hand);
 
-            if (player.isBusted || (bankValue <= 21 && bankValue >= playerValue)) {
-                // Spieler verliert Einsatz - Bank behält den Betrag
+            if (player.isBusted || (bankValue <= 21 && bankValue > playerValue)) {
+                // Spieler verliert → Bank behält den Einsatz (nichts passiert)
                 continue;
-            } else {
-                // Spieler gewinnt seinen Einsatz + gleichen Betrag als Gewinn
+            } 
+            
+            else if (bankValue == playerValue) {
+                // Unentschieden → Spieler bekommt seinen Einsatz zurück
+                uint256 refund = player.bet;
+                player.addr.transfer(refund);
+            } 
+            
+            else {
+                // Spieler gewinnt → Bank zahlt doppelten Einsatz zurück
                 uint256 payout = player.bet * 2;
-                payable(player.addr).transfer(payout);
+                player.addr.transfer(payout);
             }
         }
-
     }
 
 

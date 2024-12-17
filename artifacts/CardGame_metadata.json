@@ -11,6 +11,102 @@
 				"type": "constructor"
 			},
 			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "timeRemaining",
+						"type": "uint256"
+					}
+				],
+				"name": "TimeLeft",
+				"type": "event"
+			},
+			{
+				"inputs": [],
+				"name": "actionDeadline",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "bankBalance",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "bankHashes",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "bankHashesSet",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "calculateAllCardValues",
+				"outputs": [
+					{
+						"internalType": "uint8[]",
+						"name": "playerValues",
+						"type": "uint8[]"
+					},
+					{
+						"internalType": "uint8",
+						"name": "bankValue",
+						"type": "uint8"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "cashout",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "bytes32",
@@ -26,43 +122,55 @@
 			{
 				"inputs": [
 					{
+						"internalType": "uint256",
+						"name": "randomNumber",
+						"type": "uint256"
+					}
+				],
+				"name": "distributeCards",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getAllCards",
+				"outputs": [
+					{
+						"internalType": "string[]",
+						"name": "bankCards",
+						"type": "string[]"
+					},
+					{
+						"internalType": "string[][]",
+						"name": "playerCards",
+						"type": "string[][]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "handleTimeout",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "address",
 						"name": "",
 						"type": "address"
 					}
 				],
-				"name": "commitments",
+				"name": "hasChosen",
 				"outputs": [
 					{
-						"internalType": "bytes32",
+						"internalType": "bool",
 						"name": "",
-						"type": "bytes32"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "debugGetHands",
-				"outputs": [
-					{
-						"internalType": "uint8[][]",
-						"name": "",
-						"type": "uint8[][]"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "getAllHands",
-				"outputs": [
-					{
-						"internalType": "string[]",
-						"name": "",
-						"type": "string[]"
+						"type": "bool"
 					}
 				],
 				"stateMutability": "view",
@@ -82,6 +190,25 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "playerChoices",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "playerCount",
 				"outputs": [
@@ -92,6 +219,39 @@
 					}
 				],
 				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "playerHashes",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "playerHit",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "playerStand",
+				"outputs": [],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -168,7 +328,11 @@
 		},
 		"userdoc": {
 			"kind": "user",
-			"methods": {},
+			"methods": {
+				"handleTimeout()": {
+					"notice": "Behandlung von Timeouts: Spieler oder Bank werden bestraft"
+				}
+			},
 			"version": 1
 		}
 	},
@@ -189,27 +353,27 @@
 	},
 	"sources": {
 		"B1.sol": {
-			"keccak256": "0x1bcf5dd4c36d952c2c726acd403affee0b8342604189799326d46ebc80611edf",
+			"keccak256": "0x29936b22411594c914ec8dbeabea52512eb927c0993dc7ca3686b1796188a00d",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://c1f2993eb9aafb6320730813608bb81da146b8ebe51e93d485885a15f7e7e7ae",
-				"dweb:/ipfs/QmPY3zWZb2UYtbD2ZXxJALobL8pSufU3HXSNSmrPgonqCk"
+				"bzz-raw://5b7c47aa9425f4f2b252d08648b1b7bbb42aee19db94c71664cc53bb7350064f",
+				"dweb:/ipfs/QmRpxY9fvWWM4nGNCrEiZ6UtRFTeu6Pu6cbaUPjdFhyU76"
 			]
 		},
-		"C1.sol": {
-			"keccak256": "0xfeca885f16782c94dfe4f45fd42e537b0d04dc61189eecfbc2634cc01e98c6b1",
+		"CardLibrary.sol": {
+			"keccak256": "0xd25eebd60487a9ad628d97cce9975dacdb4c6530c7bee3d356938a3aac1ba63c",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://239e8073dd3dcdb99cb682d828d1b518673e1361eb9fc0aad7067280e8c127eb",
-				"dweb:/ipfs/QmPfJbxEFbfzgW7mLp1uA4aiibwthymCjG6NizZVTrHEqh"
+				"bzz-raw://fbfb9522faf023db2d425b0c0e57b56a5cc616eeddf430aa20dad621cb3ed0f4",
+				"dweb:/ipfs/QmNYuwZxe4rWU3k9NR7ZStrg5zXoPBtZFXHeqsrvRnf5xi"
 			]
 		},
-		"R1.sol": {
-			"keccak256": "0x74e502e764fe426af37a13876e12ff214358a68865b27cae9380de0f699d2597",
+		"TimeOutLibrary.sol": {
+			"keccak256": "0xb44afd347460b8cb61da82c0289d83dd18e69d4493e930c14746892ae6d07889",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://2ba8919dba764b6cabc64befef9481ccd529608029b2b757d381e2e94f2de2a8",
-				"dweb:/ipfs/QmWauYeNpKb3fafRQQdze4aR549pDLjtnCRWwAY7DqVaGM"
+				"bzz-raw://8f8716ccc17b7fbc06fccb0cc075d780847a21397fd610edd4892390af77b617",
+				"dweb:/ipfs/QmTWCPTzMzfAWsru4je6vP8EAzHySroXdCsASJ6ABbehf1"
 			]
 		}
 	},
