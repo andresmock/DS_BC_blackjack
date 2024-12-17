@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./C1.sol";
+import "./CardLibrary.sol";
+import "./TimeOutLibrary.sol";
 
 contract CardGame {
     enum GameState { WaitingForPlayers, Committing, Revealing, Playing, HitStand, Completed }
@@ -307,8 +308,6 @@ contract CardGame {
         }
 
     }
-
-
 
 
     // Function to map the numeric card value to the correct Blackjack representation
